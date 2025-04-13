@@ -3,365 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeFuery AI Interview</title>
-    <!-- Link CSS file -->
+    <title>CoadFurey AI Interview Platform</title>
     <link rel="stylesheet" href="style.css">
-
-    <!-- Favicon (Optional but recommended) -->
-    <!-- <link rel="icon" href="favicon.ico" type="image/x-icon"> -->
-
-    <!-- Firebase SDKs (Compat Version) -->
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
-    <!-- Add Storage SDK if you implement direct video upload TO Firebase later -->
-    <!-- <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script> -->
-
+    <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dzj2wcui1/image/upload/v1744563145/voc5gbr1g6ucgufrmko7.png">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <!-- Your Script (defer ensures it runs after HTML is parsed) -->
+    <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <!-- ===== HEADER ===== -->
-        <header class="main-header">
-            <div class="logo"> <!-- Logo container -->
-                <h1>CodeFuery</h1>
-            </div>
-            <!-- User Profile Panel -->
-            <div id="user-info" class="user-panel" style="display: none;">
-                 <div class="welcome-message">
-                    Welcome, <strong id="user-fullname" class="user-detail user-fullname"></strong> (<span id="user-email" class="user-detail user-email"></span>)!<br>
-                    <span class="user-role-info">Role: <span id="user-role" class="user-detail user-role"></span></span>
-                    <span class="user-exp-info">Experience: <span id="user-experience" class="user-detail user-experience">N/A</span> years</span>
+    <header class="container">
+       <h1>CodeFurey</h1>
+    </header>
+
+    <div id="global-loading" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <div id="global-error" class="error-message container" style="display: none;"></div>
+
+    <main id="main-content" class="container">
+
+        <!-- 1. Authentication -->
+        <section id="auth-section" style="display: none;">
+            <h2>Welcome</h2>
+            <div id="auth-error" class="error-message" style="display: none;"></div>
+            <div id="auth-message" class="message" style="display: none;"></div>
+
+            <!-- Login Form -->
+            <form id="login-form" style="display: block;">
+                <h3>Login</h3>
+                <div class="form-group">
+                    <label for="login-email">Email:</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" id="login-btn" class="btn primary-btn">Login</button>
+                <p><a href="#" id="forgot-password-link">Forgot Password?</a></p>
+                <p>Don't have an account? <a href="#" id="show-signup-link">Sign Up</a></p>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signup-form" style="display: none;">
+                <h3>Sign Up</h3>
+                <div class="form-group">
+                    <label for="signup-fullname">Full Name:</label>
+                    <input type="text" id="signup-fullname" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email:</label>
+                    <input type="email" id="signup-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password (min 6 chars):</label>
+                    <input type="password" id="signup-password" required minlength="6">
+                </div>
+                 <div class="form-group">
+                    <label for="signup-experience">Years of Experience:</label>
+                    <input type="number" id="signup-experience" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="signup-role">Role:</label>
+                    <select id="signup-role" required>
+                        <option value="" disabled selected>Select Role...</option>
+                        <option value="candidate">Candidate</option>
+                        <option value="recruiter">Recruiter</option>
+                    </select>
+                </div>
+                <button type="submit" id="signup-btn" class="btn primary-btn">Sign Up</button>
+                <p>Already have an account? <a href="#" id="show-login-link">Login</a></p>
+            </form>
+
+            <!-- Forgot Password Form -->
+            <form id="forgot-password-form" style="display: none;">
+                 <h3>Reset Password</h3>
+                 <div class="form-group">
+                     <label for="reset-email-input">Enter your Email:</label>
+                     <input type="email" id="reset-email-input" required>
                  </div>
-                <button id="logout-btn" class="btn secondary-btn small-btn">Logout</button>
+                 <button id="reset-password-btn" class="btn primary-btn">Send Reset Link</button>
+                 <p><a href="#" id="back-to-login-link">Back to Login</a></p>
+             </form>
+        </section>
+
+        <!-- 2. User Info Header (Displayed when logged in) -->
+        <section id="user-info" class="user-info-header" style="display: none;">
+            <div>
+                Logged in as: <strong id="user-fullname"></strong> (<span id="user-email"></span>)
+                | Role: <span id="user-role"></span>
+                | Experience: <span id="user-experience"></span> yrs
             </div>
-        </header>
+            <button id="logout-btn" class="btn secondary-btn small-btn">Logout</button>
+        </section>
 
-        <!-- ===== MAIN CONTENT ===== -->
-        <main id="main-content">
+        <!-- 3. Recruiter Dashboard -->
+        <section id="recruiter-dashboard" style="display: none;">
+            <h2>Recruiter Dashboard</h2>
 
-            <!-- ===== AUTH SECTION ===== -->
-            <section id="auth-section">
-                <div class="auth-container card">
-                    <!-- Login Form -->
-                    <form id="login-form" class="auth-form active-form">
-                        <h2>Login</h2>
-                        <div class="form-group">
-                            <label for="login-email" class="sr-only">Email</label>
-                            <input type="email" id="login-email" placeholder="Email" required aria-required="true">
-                        </div>
-                        <div class="form-group">
-                             <label for="login-password" class="sr-only">Password</label>
-                            <input type="password" id="login-password" placeholder="Password" required aria-required="true">
-                        </div>
-                        <div class="form-actions">
-                            <button id="login-btn" class="btn primary-btn full-width">Login</button>
-                            <a href="#" id="forgot-password-link" class="btn text-btn">Forgot Password?</a>
-                        </div>
-                         <p class="auth-switch">Don't have an account? <a href="#" id="show-signup-link" class="btn text-btn link-look">Sign Up</a></p>
-                    </form>
-
-                    <!-- Signup Form -->
-                    <form id="signup-form" class="auth-form" style="display: none;">
-                        <h2>Sign Up</h2>
-                        <div class="form-group">
-                             <label for="signup-fullname" class="sr-only">Full Name</label>
-                            <input type="text" id="signup-fullname" placeholder="Full Name" required aria-required="true">
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-email" class="sr-only">Email</label>
-                            <input type="email" id="signup-email" placeholder="Email" required aria-required="true">
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-password" class="sr-only">Password</label>
-                            <input type="password" id="signup-password" placeholder="Password (min. 6 characters)" required aria-required="true">
-                        </div>
-                        <div class="form-group">
-                             <label for="signup-experience" class="sr-only">Years of Experience</label>
-                            <input type="number" id="signup-experience" placeholder="Years of Experience" required min="0" aria-required="true">
-                        </div>
-                        <div class="form-group">
-                             <label for="signup-role" class="sr-only">Select Your Role</label>
-                            <select id="signup-role" required aria-required="true">
-                                <option value="" disabled selected>Select Your Role</option>
-                                <option value="candidate">Candidate</option>
-                                <option value="recruiter">Recruiter</option>
-                            </select>
-                        </div>
-                        <div class="form-actions">
-                            <button id="signup-btn" class="btn primary-btn full-width">Sign Up</button>
-                        </div>
-                        <p class="auth-switch">Already have an account? <a href="#" id="show-login-link" class="btn text-btn link-look">Login</a></p>
-                    </form>
-
-                    <!-- Forgot Password Form -->
-                     <form id="forgot-password-form" class="auth-form" style="display: none;">
-                        <h2>Reset Password</h2>
-                         <p class="form-description">Enter your email address and we'll send you a link to reset your password.</p>
-                         <div class="form-group">
-                            <label for="reset-email-input" class="sr-only">Account Email</label>
-                            <input type="email" id="reset-email-input" placeholder="Enter your account email" required aria-required="true">
-                         </div>
-                         <div class="form-actions">
-                            <button id="reset-password-btn" class="btn primary-btn full-width">Send Reset Link</button>
-                            <a href="#" id="back-to-login-link" class="btn text-btn link-look">Back to Login</a>
-                         </div>
-                    </form>
-
-                    <!-- Auth Messages Area -->
-                    <div class="auth-messages">
-                        <div id="auth-message" class="message" style="display: none;"></div>
-                        <div id="auth-error" class="error-message" style="display: none;"></div>
-                    </div>
-                </div> <!-- /.auth-container -->
-            </section> <!-- /#auth-section -->
-
-            <!-- ===== RECRUITER DASHBOARD ===== -->
-            <section id="recruiter-dashboard" class="dashboard" style="display: none;">
-                <header class="dashboard-header">
-                    <h2>Recruiter Dashboard</h2>
-                </header>
-
-                <div class="dashboard-content">
-                    <!-- Post Job Card -->
-                    <div id="post-job-section" class="card">
-                        <div class="card-header">
-                             <h3>Post New Job</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="job-title" class="sr-only">Job Title</label>
-                                <input type="text" id="job-title" placeholder="Job Title" required aria-required="true">
-                            </div>
-                            <div class="form-group">
-                                 <label for="job-description" class="sr-only">Job Description</label>
-                                <textarea id="job-description" placeholder="Job Description" required aria-required="true" rows="5"></textarea>
-                            </div>
-                            <button id="post-job-btn" class="btn primary-btn">Post Job</button>
-                            <div id="post-job-msg" class="message inline-msg" style="display: none;"></div>
-                        </div>
-                    </div>
-
-                    <!-- Posted Jobs Card -->
-                    <div class="card">
-                        <div class="card-header">
-                             <h3>Your Posted Jobs</h3>
-                        </div>
-                        <div class="card-body">
-                             <div id="recruiter-jobs-list" class="list-container">
-                                 <div class="loading">Loading jobs...</div> <!-- Initial loading state -->
-                             </div>
-                        </div>
-                         <div class="card-footer">
-                             <p class="index-note">Note: Jobs might have retention policies set by admin.</p>
-                         </div>
-                    </div>
-
-                    <!-- Candidates List Card -->
-                     <div class="card">
-                         <div class="card-header">
-                            <h3>Candidates for: <strong id="selected-job-title-recruiter" class="highlight-text">(Select a job)</strong></h3>
-                         </div>
-                         <div class="card-body">
-                             <div id="candidates-list" class="list-container">
-                                 <p class="list-empty-msg">Select a job to view candidates.</p> <!-- Initial placeholder -->
-                             </div>
-                         </div>
-                          <div class="card-footer">
-                             <p class="index-note">Note: Review candidate submissions promptly.</p>
-                          </div>
+            <!-- Post Job -->
+            <section id="post-job-section" class="dashboard-section">
+                <h3>Post a New Job</h3>
+                 <form id="post-job-form">
+                     <div class="form-group">
+                         <label for="job-title">Job Title:</label>
+                         <input type="text" id="job-title" required>
                      </div>
-                </div> <!-- /.dashboard-content -->
-            </section> <!-- /#recruiter-dashboard -->
-
-            <!-- ===== CANDIDATE DASHBOARD ===== -->
-            <section id="candidate-dashboard" class="dashboard" style="display: none;">
-                 <header class="dashboard-header">
-                    <h2>Candidate Dashboard</h2>
-                </header>
-                 <div class="dashboard-content">
-                     <!-- Available Jobs Card -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Available Jobs</h3>
-                        </div>
-                        <div class="card-body">
-                            <div id="available-jobs-list" class="list-container">
-                                <div class="loading">Loading jobs...</div> <!-- Initial loading state -->
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                             <p class="index-note">Note: Job postings may expire.</p>
-                        </div>
-                    </div>
-                     <!-- My Interviews Card -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>My Interviews</h3>
-                        </div>
-                        <div class="card-body">
-                             <div id="my-interviews-list" class="list-container">
-                                 <div class="loading">Loading interviews...</div> <!-- Initial loading state -->
-                             </div>
-                         </div>
-                          <div class="card-footer">
-                            <p class="index-note">Note: Interview records may be archived after some time.</p>
-                          </div>
-                    </div>
-                 </div> <!-- /.dashboard-content -->
-            </section> <!-- /#candidate-dashboard -->
-
-            <!-- ===== INTERVIEW SECTION ===== -->
-            <section id="interview-section" class="card interview-container" style="display: none;">
-                <header class="interview-header">
-                    <h2>Interview for <strong id="interview-job-title" class="highlight-text"></strong></h2>
-                     <div class="interview-status-messages">
-                         <div id="interview-loading" class="loading" style="display: none;">Setting up...</div>
-                         <div id="interview-error" class="error-message" style="display: none;"></div>
+                     <div class="form-group">
+                         <label for="job-description">Job Description:</label>
+                         <textarea id="job-description" rows="4" required></textarea>
                      </div>
-                </header>
+                     <button type="submit" id="post-job-btn" class="btn primary-btn">Post Job</button>
+                     <div id="post-job-msg" class="inline-msg" style="display: none;"></div>
+                 </form>
+            </section>
 
-                <div id="interview-qa-area" class="interview-body" style="display: none;">
-                   <div class="question-area">
-                       <h3 id="question-title">Question X of Y:</h3>
-                       <p id="question-text" class="highlight-box">Loading question...</p>
-                   </div>
+            <!-- View Jobs & Candidates -->
+            <section class="dashboard-section">
+                <h3>Your Posted Jobs</h3>
+                <div id="recruiter-jobs-list" class="item-list">
+                    <!-- Jobs loaded here -->
+                </div>
+            </section>
 
-                   <div id="video-area" class="video-area-container">
-                       <h4>Your Video Answer</h4>
-                       <div class="video-feed-wrapper">
-                           <video id="webcam-feed" width="400" height="300" autoplay muted playsinline aria-label="Webcam Feed"></video>
-                       </div>
+            <section class="dashboard-section">
+                 <h3>Candidates for: <span id="selected-job-title-recruiter">(Select job)</span></h3>
+                <div id="candidates-list" class="item-list">
+                     <p class="list-empty-msg">Select a job above to see candidates.</p>
+                    <!-- Candidates loaded here -->
+                </div>
+            </section>
+        </section>
 
-                       <div id="recording-controls" class="button-group">
-                           <button id="start-recording-btn" class="btn primary-btn record-btn" disabled>Start Recording</button>
-                           <button id="stop-recording-btn" class="btn secondary-btn stop-btn" disabled>Stop Recording</button>
-                       </div>
+        <!-- 4. Candidate Dashboard -->
+        <section id="candidate-dashboard" style="display: none;">
+            <h2>Candidate Dashboard</h2>
 
-                        <div id="interview-navigation" class="button-group" style="margin-top: var(--space-md);">
-                             <button id="next-question-btn" class="btn primary-btn" style="display: none;">Next Question</button>
-                             <button id="finish-interview-btn" class="btn primary-btn accent-finish" style="display: none;">Finish Interview</button>
-                         </div>
+             <section class="dashboard-section">
+                 <h3>Available Jobs</h3>
+                 <div id="available-jobs-list" class="item-list">
+                     <!-- Available jobs loaded here -->
+                 </div>
+             </section>
 
-                       <div class="recording-feedback">
-                           <span id="recording-status" class="status-text">Ready to record.</span>
-                           <div id="loading-answer" class="loading inline-loading" style="display: none;">Processing...</div>
-                           <div id="stt-simulation-note" class="message inline-msg warning-msg" style="display: none;">
-                               <strong>Note:</strong> Speech-to-text is simulated. Your actual speech is not transcribed in this demo. Analysis uses placeholder text. Video is uploaded.
-                           </div>
-                       </div>
-                   </div> <!-- /#video-area -->
-                </div> <!-- /#interview-qa-area -->
-           </section> <!-- /#interview-section -->
+             <section class="dashboard-section">
+                 <h3>My Interview History</h3>
+                 <div id="my-interviews-list" class="item-list">
+                     <!-- Candidate's interviews loaded here -->
+                 </div>
+             </section>
+        </section>
 
-            <!-- ===== REPORT SECTION ===== -->
-            <section id="report-section" class="card report-container" style="display: none;">
-                 <header class="report-header">
-                    <div class="report-header-main">
-                        <h2>Interview Report</h2>
-                         <button id="back-to-dashboard-btn" class="btn secondary-btn back-btn small-btn">← Back to Dashboard</button>
-                    </div>
-                     <div class="report-info">
-                         <span class="info-item"><strong>Job:</strong> <span id="report-job-title">N/A</span></span>
-                         <span class="info-item"><strong>Candidate:</strong> <span id="report-candidate-email">N/A</span></span>
-                         <span class="info-item"><strong>Status:</strong> <span id="report-status" class="interview-status status-Pending">Pending</span></span>
-                     </div>
-                 </header>
-
-                 <div class="report-body">
-                    <!-- Recruiter Status Update Area -->
-                    <div id="recruiter-status-update" class="status-update-card sub-card" style="display: none;">
-                         <div class="card-header">
-                             <h3>Update Candidate Status</h3>
-                         </div>
-                         <div class="card-body">
-                             <!-- Start: Two-Row Layout -->
-                             <div class="status-update-content">
-                                 <!-- Row 1: Status Selector -->
-                                 <div class="form-group status-select-row">
-                                     <label for="update-status-select">Select New Status</label>
-                                     <select id="update-status-select">
-                                         <option value="Pending">Pending Review</option>
-                                         <option value="Reviewed">Reviewed</option>
-                                         <option value="Shortlisted">Shortlisted</option>
-                                         <option value="Hired">Hired (Approve)</option>
-                                         <option value="Rejected">Rejected</option>
-                                     </select>
-                                 </div>
-                                 <!-- Row 2: Notes & Button Wrapper -->
-                                 <div class="status-notes-action-row">
-                                     <div class="form-group status-notes-group">
-                                         <label for="status-notes">Additional Notes (Optional)</label>
-                                         <textarea id="status-notes" rows="3" placeholder="Add any notes about the status change..."></textarea>
-                                     </div>
-                                     <div class="form-action-group status-button-group">
-                                         <button id="update-status-btn" class="btn primary-btn">Update Status</button>
-                                     </div>
-                                 </div>
-                             </div>
-                             <!-- End: Two-Row Layout -->
-                             <div id="update-status-msg" class="message inline-msg" style="display: none;"></div>
-                         </div>
-                    </div> <!-- /#recruiter-status-update -->
-
-                    <!-- AI Feedback Area -->
-                    <div id="feedback-area" class="report-subsection">
-                        <h3>AI Feedback & Score <small>(Based on Simulated Text)</small></h3>
-                        <div id="loading-feedback" class="loading" style="display: none;">Loading feedback...</div>
-                        <div id="error-feedback" class="error-message" style="display: none;"></div>
-                        <div id="feedback-content" class="highlight-box" style="display: none;">
-                            <!-- Feedback will be loaded here by JS -->
-                            <p>Loading feedback content...</p>
-                        </div>
-                    </div>
-
-                    <!-- Q&A Report Area -->
-                    <div class="report-subsection">
-                        <h3>Interview Q&A <small>(Simulated Text & Video Link)</small></h3>
-                        <div id="report-content">
-                            <!-- Q&A Report will be loaded here by JS -->
-                            <div class="loading">Loading Q&A...</div>
-                        </div>
-                    </div>
-                 </div> <!-- /.report-body -->
-            </section> <!-- /#report-section -->
-
-             <!-- ===== GLOBAL OVERLAYS ===== -->
-             <div id="global-loading" class="loading overlay" style="display: none;">
-                 <div class="loading-content">Loading...</div>
+        <!-- 5. Resume Upload Section -->
+        <section id="resume-upload-section" class="centered-section" style="display: none;">
+            <h2>Start Interview for: <span id="resume-prompt-job-title"></span></h2>
+            <p>Please upload your resume as a JPG or PNG image (Max 5MB).</p>
+            <input type="hidden" id="resume-upload-job-id">
+            <div class="form-group">
+                <label for="interview-resume-input">Select Resume Image:</label>
+                <input type="file" id="interview-resume-input" accept="image/jpeg, image/png">
+            </div>
+            <div id="interview-resume-status" class="message inline-msg"></div>
+            <div id="resume-upload-error" class="error-message inline-msg" style="display: none;"></div>
+            <div class="button-group">
+                 <button id="upload-resume-and-start-btn" class="btn primary-btn">Upload & Start</button>
+                 <button id="cancel-interview-start-btn" class="btn secondary-btn">Cancel</button>
              </div>
-             <div id="global-error" class="error-message overlay-message" style="display: none;">
-                  An unexpected error occurred. Please try again later.
+        </section>
+
+        <!-- 6. Interview Section -->
+        <section id="interview-section" style="display: none;">
+            <h2>Interview for: <span id="interview-job-title"></span></h2>
+
+            <div id="interview-loading" class="loading" style="display: none;">Loading Interview...</div>
+            <div id="interview-error" class="error-message" style="display: none;"></div>
+
+            <div id="interview-qa-area" style="display: none;">
+                <h3 id="question-title">Question X of Y:</h3>
+                <p id="question-text" class="question-box">Loading question...</p>
+
+                <div id="video-area">
+                    <video id="webcam-feed" autoplay muted playsinline></video>
+                    <div id="recording-controls">
+                        <span id="recording-status">Ready</span>
+                        <span id="question-timer-display" class="timer-display hidden"></span> <!-- Timer Display -->
+                        <button id="start-recording-btn" class="btn primary-btn" disabled>Start Recording</button> <!-- Initially disabled until ready -->
+                        <button id="stop-recording-btn" class="btn danger-btn" disabled>Stop Recording</button>
+                    </div>
+                     <p id="stt-simulation-note" class="message inline-msg" style="display: none;">(Note: Answer text is simulated based on video upload. Full transcription requires a backend service.)</p>
+                     <div id="loading-answer" class="loading" style="display: none;">Processing Answer...</div>
+                </div>
+
+                <div class="navigation-controls">
+                    <button id="next-question-btn" class="btn primary-btn" style="display: none;" disabled>Next Question</button>
+                    <button id="finish-interview-btn" class="btn primary-btn" style="display: none;" disabled>Finish Interview</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Report Section -->
+        <section id="report-section" style="display: none;">
+             <div class="report-header">
+                 <h2>Interview Report</h2>
+                 <button id="back-to-dashboard-btn" class="btn secondary-btn small-btn">← Back to Dashboard</button>
              </div>
-        </main>
 
-        <!-- ===== FOOTER ===== -->
-        <footer class="main-footer">
-            <p>© <span id="current-year">2024</span> Team CodeFurey</p>
-        </footer>
+            <p><strong>Job Title:</strong> <span id="report-job-title"></span></p>
+            <p><strong>Candidate:</strong> <span id="report-candidate-email"></span></p>
+            <p><strong>Status:</strong> <span id="report-status" class="interview-status"></span></p>
+            <p id="report-resume-link-area" style="display: none;">
+                <strong>Resume:</strong> <a id="report-resume-link" href="#" target="_blank" rel="noopener noreferrer" class="link-style">View Uploaded Resume</a>
+            </p>
 
-    </div> <!-- /.container -->
+            <!-- Recruiter Only: Status Update -->
+             <div id="recruiter-status-update" style="display: none; margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px;">
+                 <h4>Update Candidate Status</h4>
+                 <div class="form-group">
+                     <label for="update-status-select">Status:</label>
+                     <select id="update-status-select">
+                         <option value="Pending">Pending</option>
+                         <option value="Reviewed">Reviewed</option>
+                         <option value="Selected">Selected</option>
+                         <option value="Rejected">Rejected</option>
+                         <option value="On Hold">On Hold</option>
+                     </select>
+                 </div>
+                 <div class="form-group">
+                     <label for="status-notes">Notes (Optional):</label>
+                     <textarea id="status-notes" rows="2"></textarea>
+                 </div>
+                 <button id="update-status-btn" class="btn primary-btn small-btn">Update Status</button>
+                 <div id="update-status-msg" class="inline-msg" style="display: none;"></div>
+             </div>
 
-    <!-- Link JavaScript file -->
-    <script src="script.js"></script>
+            <div id="feedback-area" style="margin-top: 20px;">
+                <h3>AI Feedback & Analysis</h3>
+                <div id="loading-feedback" class="loading" style="display: none;">Loading Feedback...</div>
+                <div id="error-feedback" class="error-message" style="display: none;"></div>
+                <div id="feedback-content" style="display: none;">
+                    <!-- Feedback loaded here -->
+                </div>
+            </div>
 
-    <!-- Optional: Add JS to update year -->
-    <script>
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-    </script>
+            <div id="report-content" style="margin-top: 20px;">
+                <h3>Questions & Answers</h3>
+                <!-- Q&A loaded here -->
+            </div>
+        </section>
 
-    <!-- Screen Reader Only CSS Class Definition (Keep this or move to CSS file) -->
-    <style>
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-    </style>
+    </main>
+
+    <footer class="container">
+        <p>© 2025 Team CodeFurey. All rights reserved.</p>
+        <img id="logo-main" src="https://res.cloudinary.com/dzj2wcui1/image/upload/v1744563145/voc5gbr1g6ucgufrmko7.png" alt="">
+    </footer>
 </body>
 </html>
