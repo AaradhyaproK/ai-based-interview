@@ -1,0 +1,1550 @@
+/* ===== BASE STYLES & VARIABLES ===== */
+:root {
+    /* Color Palette */
+    --primary-500: #4361ee;
+    --primary-600: #3a56d4;
+    --primary-400: #4cc9f0;
+    --secondary-500: #7209b7;
+    --accent-500: #f72585;
+    --success-500: #38b000;
+    --warning-500: #ffaa00;
+    --danger-500: #ef233c;
+    --light-100: #f8f9fa;
+    --dark-900: #212529;
+    --gray-200: #e9ecef;
+    --gray-400: #adb5bd;
+    --gray-600: #495057;
+  
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, var(--primary-500) 0%, #3a0ca3 100%);
+    --gradient-accent: linear-gradient(135deg, var(--accent-500) 0%, #b5179e 100%);
+    --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  
+    /* Typography */
+    --font-main: 'Inter', -apple-system, system-ui, sans-serif;
+    --font-heading: 'Poppins', var(--font-main);
+    --font-mono: 'Fira Code', monospace;
+  
+    /* Spacing */
+    --space-xxs: 0.25rem;
+    --space-xs: 0.5rem;
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-xxl: 3rem;
+  
+    /* Border */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+  
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+    --shadow-lg: 0 15px 30px rgba(0,0,0,0.15);
+    --shadow-xl: 0 20px 40px rgba(0,0,0,0.2);
+    --shadow-inner: inset 0 2px 4px rgba(0,0,0,0.05);
+  
+    /* Transitions */
+    --transition-xs: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-sm: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-md: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-lg: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+    /* Glass Effect */
+    --glass-bg: rgba(255, 255, 255, 0.92);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  
+    /* Z-index */
+    --z-base: 1;
+    --z-dropdown: 10;
+    --z-sticky: 20;
+    --z-fixed: 30;
+    --z-modal: 40;
+    --z-popover: 50;
+    --z-tooltip: 60;
+  }
+  
+  /* ===== BASE STYLES ===== */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  body {
+    font-family: var(--font-main);
+    line-height: 1.7;
+    color: var(--dark-900);
+    background-color: #f5f7ff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* ===== TYPOGRAPHY ===== */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: var(--space-md);
+    color: var(--dark-900);
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    letter-spacing: -0.025em;
+  }
+  
+  h2 {
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    letter-spacing: -0.015em;
+  }
+  
+  h4 {
+    font-size: 1.15rem; /* Adjusted for report QA blocks */
+    font-weight: 600;
+  }
+  
+  p {
+    margin-bottom: var(--space-md);
+    color: var(--gray-600);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  
+  a {
+    color: var(--primary-500);
+    text-decoration: none;
+    transition: color var(--transition-xs);
+    font-weight: 500;
+  }
+  
+  a:hover {
+    color: var(--primary-600);
+  }
+  
+  /* ===== LAYOUT ===== */
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+    position: relative;
+  }
+  
+  #main-content { /* Added ID for main content area */
+    flex-grow: 1; /* Ensures content pushes footer down */
+  }
+  
+  /* ===== HEADER ===== */
+  .main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) 0;
+    margin-bottom: var(--space-xl);
+    position: relative;
+    z-index: var(--z-sticky);
+    animation: fadeInDown 0.6s var(--transition-md) both;
+  }
+  
+  .main-header h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    letter-spacing: -0.5px;
+    transform: translateZ(0);
+  }
+  
+  .main-header h1::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--gradient-accent);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: right;
+    animation: titleUnderline 1s 0.3s forwards;
+  }
+  
+  @keyframes titleUnderline {
+    from {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+    to {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+  
+  /* ===== USER INFO ===== */
+  #user-info {
+    background-color: var(--light-100);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-md);
+    animation: fadeIn 0.5s 0.2s both;
+  }
+  
+  #user-info:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  
+  .welcome-message {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    flex-grow: 1; /* Allow text to take available space */
+  }
+  
+  .welcome-message strong {
+    color: var(--dark-900);
+    font-weight: 600;
+  }
+  
+  .welcome-message span {
+    color: var(--gray-600);
+    font-size: 0.9em;
+    display: block; /* Ensure details appear below */
+  }
+  
+  /* Make Logout button smaller and align right */
+  #user-info #logout-btn {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.85rem;
+    min-width: auto;
+    margin-left: auto; /* Pushes it to the right */
+    flex-shrink: 0; /* Prevent shrinking */
+  }
+  
+  
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-sm) var(--space-lg);
+    border: none;
+    border-radius: var(--radius-xl);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-md);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    z-index: var(--z-base);
+    box-shadow: var(--shadow-sm);
+    min-width: 120px;
+    transform: translateZ(0);
+  }
+  
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-primary);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity var(--transition-md);
+  }
+  
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .btn:active {
+    transform: translateY(1px);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+  }
+  
+  /* Primary Button */
+  .primary-btn {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .primary-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-primary);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity var(--transition-md);
+  }
+  
+  .primary-btn:hover::after {
+    opacity: 1;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Secondary Button */
+  .secondary-btn {
+    background: white;
+    color: var(--primary-500);
+    border: 2px solid var(--primary-500);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .secondary-btn:hover {
+    background: rgba(67, 97, 238, 0.05);
+    color: var(--primary-600);
+    border-color: var(--primary-600);
+  }
+  
+  /* Danger Button */
+  .danger-btn {
+    background: var(--danger-500);
+    color: white;
+    box-shadow: 0 4px 15px rgba(239, 35, 60, 0.3);
+  }
+  
+  .danger-btn:hover {
+    background: #d90429;
+    box-shadow: 0 8px 25px rgba(239, 35, 60, 0.4);
+  }
+  
+  /* Small Button */
+  .small-btn {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.85rem;
+    min-width: auto;
+    border-radius: var(--radius-md); /* Slightly smaller radius for small buttons */
+  }
+  
+  /* Back Button */
+  .back-btn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+  
+  .back-btn svg {
+    transition: transform var(--transition-sm);
+  }
+  
+  .back-btn:hover svg {
+    transform: translateX(-3px);
+  }
+  
+  /* Disabled Button State */
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--shadow-sm);
+  }
+  .btn:disabled:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+  }
+  .btn:disabled::after {
+      display: none; /* Disable hover animations */
+  }
+  
+  
+  /* ===== FORMS ===== */
+  .form-group {
+    margin-bottom: var(--space-lg);
+    position: relative;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    font-weight: 600;
+    color: var(--dark-900);
+    font-size: 0.95rem;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-family: var(--font-main);
+    background-color: white;
+    transition: all var(--transition-sm);
+    box-shadow: var(--shadow-inner);
+    color: var(--dark-900); /* Ensure text color is dark */
+  }
+  
+  input[type="number"] {
+      /* Ensure number inputs behave similarly */
+  }
+  
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="number"]:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2), var(--shadow-inner);
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+  
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234361ee' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--space-md) center;
+    background-size: 12px;
+    padding-right: var(--space-xl);
+    cursor: pointer;
+  }
+  
+  /* Input Specific Placeholders */
+  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: var(--gray-400);
+    opacity: 1; /* Firefox */
+  }
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: var(--gray-400);
+  }
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: var(--gray-400);
+  }
+  
+  /* ===== AUTH SECTION ===== */
+  #auth-section {
+    max-width: 480px;
+    margin: var(--space-xl) auto;
+    animation: fadeInUp 0.6s both;
+  }
+  
+  .auth-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    transition: all var(--transition-lg);
+  }
+  
+  .auth-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  .auth-form {
+    margin-bottom: var(--space-lg);
+  }
+  
+  /* Style all auth forms similarly */
+  #login-form, #signup-form, #forgot-password-form {
+      /* Add any specific common styles if needed, structure is similar */
+  }
+  
+  .auth-form h2 {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+    color: var(--primary-500);
+    position: relative;
+  }
+  
+  .auth-form h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--gradient-accent);
+    border-radius: var(--radius-full);
+  }
+  
+  .auth-form button {
+    width: 100%;
+    margin-top: var(--space-sm);
+  }
+  
+  .auth-form p {
+    text-align: center;
+    margin-top: var(--space-md);
+    color: var(--gray-600);
+  }
+  
+  .form-link {
+    display: inline-block;
+    font-weight: 500;
+    color: var(--primary-500);
+    position: relative;
+    margin: 0 var(--space-xs); /* Add spacing around links */
+    font-size: 0.9rem; /* Slightly smaller */
+    cursor: pointer;
+  }
+  
+  .form-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gradient-accent);
+    transition: width var(--transition-sm);
+  }
+  
+  .form-link:hover::after {
+    width: 100%;
+  }
+  
+  /* Forgot Password Specifics */
+  #forgot-password-form p {
+      margin-top: 0; /* Adjust default paragraph margin */
+      margin-bottom: var(--space-lg); /* Space before input */
+  }
+  
+  /* Auth Messages */
+  #auth-error, #auth-message {
+      display: none; /* Initially hidden */
+      margin-top: var(--space-md);
+      text-align: center;
+  }
+  /* Use base message styles defined later */
+  
+  
+  /* ===== DASHBOARDS ===== */
+  .dashboard {
+    animation: fadeIn 0.6s both;
+  }
+  
+  .dashboard h2 {
+    position: relative;
+    padding-bottom: var(--space-sm);
+    margin-bottom: var(--space-xl);
+  }
+  
+  .dashboard h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+  }
+  
+  /* Recruiter Dashboard Specifics */
+  #post-job-section {
+      margin-bottom: var(--space-xl); /* Space below job posting */
+  }
+  #selected-job-title-recruiter {
+      font-weight: 600;
+      color: var(--dark-900);
+      margin-bottom: var(--space-sm);
+      display: block;
+  }
+  
+  /* Candidate Dashboard Specifics */
+  /* (Currently uses standard cards/lists) */
+  
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--gradient-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-xl);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-md);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--gradient-primary);
+    transition: width var(--transition-md);
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .card:hover::before {
+    width: 8px;
+  }
+  
+  .card h3 {
+    margin-top: 0;
+    margin-bottom: var(--space-lg); /* Ensure space below title */
+    position: relative;
+    display: inline-block;
+  }
+  
+  .card h3::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--gradient-accent);
+    border-radius: var(--radius-full);
+  }
+  
+  /* ===== LISTS ===== */
+  .list-container {
+    background-color: white;
+    border-radius: var(--radius-md);
+    padding: 0;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200); /* Add subtle border */
+  }
+  
+  .list-item {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    transition: all var(--transition-sm);
+  }
+  
+  .list-item:last-child {
+    border-bottom: none;
+  }
+  
+  .list-item:hover {
+    background-color: var(--light-100);
+    transform: translateX(5px);
+  }
+  
+  /* Highlight selected job in recruiter view */
+  .list-item.active {
+      background-color: rgba(67, 97, 238, 0.08);
+      border-left: 4px solid var(--primary-500);
+      padding-left: calc(var(--space-md) - 4px); /* Adjust padding for border */
+  }
+  .list-item.active:hover {
+      transform: translateX(0); /* Prevent double transform */
+  }
+  
+  .list-item > div {
+    flex: 1;
+    min-width: 0; /* Prevents overflow */
+  }
+  
+  .list-item .item-title,
+  .list-item .job-title,
+  .list-item .candidate-email { /* Consolidate main text styles */
+    font-weight: 600;
+    color: var(--dark-900);
+    margin-bottom: var(--space-xs);
+    display: block; /* Ensure takes full width if needed */
+    word-break: break-word; /* Prevent long titles breaking layout */
+  }
+  
+  .list-item .item-meta,
+  .list-item small { /* Consolidate secondary text styles */
+    color: var(--gray-600);
+    font-size: 0.85rem;
+  }
+  
+  .list-item .item-actions,
+  .list-item button { /* Target action area/buttons */
+    display: flex;
+    gap: var(--space-xs);
+    flex-shrink: 0; /* Prevent actions wrapping awkwardly */
+  }
+  
+  /* Apply small-btn style to all buttons within list items */
+  .list-item button {
+    /* The JS already adds small-btn class, but this is a fallback */
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.85rem;
+    min-width: auto;
+    border-radius: var(--radius-md);
+  }
+  
+  /* Empty list message */
+  .list-empty-msg {
+      text-align: center;
+      padding: var(--space-lg);
+      color: var(--gray-600);
+      font-style: italic;
+  }
+  
+  /* ===== INTERVIEW SECTION ===== */
+  #interview-section {
+    animation: fadeIn 0.6s both;
+  }
+  
+  #interview-qa-area {
+    opacity: 0;
+    animation: fadeIn 0.6s 0.3s forwards;
+  }
+  
+  #interview-loading { /* Style the loading message */
+      text-align: center;
+      padding: var(--space-xl);
+      font-size: 1.1rem;
+      color: var(--gray-600);
+      font-style: italic;
+  }
+  #interview-loading::after { /* Inherit spinner from .loading */
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(67, 97, 238, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--primary-500);
+    animation: spin 1s linear infinite;
+    margin-left: var(--space-sm);
+    vertical-align: middle;
+  }
+  
+  #question-title {
+    color: var(--primary-500);
+    margin-bottom: var(--space-sm);
+    font-size: 1.25rem; /* Slightly larger question title */
+  }
+  
+  #question-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    padding: var(--space-lg);
+    background-color: var(--light-100);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--primary-500);
+    margin-bottom: var(--space-lg); /* Space below question */
+  }
+  
+  /* Video Area */
+  #video-area {
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    border: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin: var(--space-xl) 0;
+    transition: all var(--transition-lg);
+  }
+  
+  #video-area:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  #webcam-feed {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    display: block;
+    margin: 0 auto var(--space-md);
+    transform: perspective(1000px) rotateX(0);
+    transition: all var(--transition-md);
+    background-color: var(--dark-900); /* Dark background while loading */
+  }
+  
+  #webcam-feed:hover {
+    transform: perspective(1000px) rotateX(5deg);
+    box-shadow: var(--shadow-xl);
+  }
+  
+  #recording-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-top: var(--space-lg); /* Space above buttons */
+  }
+  
+  #recording-status {
+    display: block;
+    text-align: center;
+    margin-top: var(--space-md);
+    font-size: 0.9rem;
+    color: var(--gray-600);
+    min-height: 1.5em; /* Prevent layout jump */
+  }
+  
+  #loading-answer { /* Style for processing indicator */
+      display: none; /* Hidden initially */
+      text-align: center;
+      margin-top: var(--space-sm);
+  }
+  #loading-answer::before { /* Use loading spinner animation */
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(67, 97, 238, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--primary-500);
+    animation: spin 1s linear infinite;
+  }
+  
+  #stt-simulation-note { /* Style the simulation note */
+      font-size: 0.8rem;
+      color: var(--warning-500);
+      text-align: center;
+      margin-top: var(--space-xs);
+      font-style: italic;
+      display: none; /* Hidden initially */
+  }
+  
+  
+  /* ===== REPORT SECTION ===== */
+  #report-section {
+    animation: fadeIn 0.6s both;
+  }
+  
+  .report-info {
+    background-color: var(--light-100);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-xl);
+    box-shadow: var(--shadow-sm);
+    display: flex; /* Use flex for better alignment */
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    align-items: center;
+  }
+  
+  .report-info p {
+    margin-bottom: 0; /* Remove default margin */
+    margin-right: var(--space-lg); /* Space between info items */
+    color: var(--dark-900); /* Darker text for info */
+  }
+  .report-info p strong {
+      color: var(--gray-600); /* Lighter label */
+      font-weight: 500;
+      margin-right: var(--space-xs);
+  }
+  .report-info .interview-status { /* Style status badge */
+      margin-left: auto; /* Push status to the right */
+  }
+  
+  /* Recruiter Status Update Area */
+  #recruiter-status-update {
+      /* Uses .status-update-card */
+      display: none; /* Hidden for candidates */
+  }
+  
+  /* Status Update Card */
+  .status-update-card {
+    background-color: var(--light-100);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    margin: var(--space-xl) 0;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .status-update-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  
+  @media (min-width: 768px) {
+    .status-update-content {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* More flexible grid */
+      align-items: end; /* Align items to bottom */
+      gap: var(--space-lg);
+    }
+    /* Ensure button doesn't stretch full width on larger screens */
+    .status-update-content .form-group:last-child {
+        grid-column: span 1; /* Occupy one column */
+    }
+    #update-status-btn {
+        width: auto; /* Let button size naturally */
+        min-width: 150px;
+    }
+  }
+  
+  /* Feedback Area */
+  #feedback-area {
+      margin-top: var(--space-xl);
+  }
+  #feedback-area h3 { /* Style feedback title */
+      margin-bottom: var(--space-lg);
+  }
+  
+  #loading-feedback { /* Feedback loading style */
+      display: flex; /* Use flex for center alignment */
+      justify-content: center;
+      align-items: center;
+      padding: var(--space-xl);
+      color: var(--gray-600);
+      font-style: italic;
+  }
+  #loading-feedback::after { /* Inherit spinner */
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(67, 97, 238, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--primary-500);
+    animation: spin 1s linear infinite;
+    margin-left: var(--space-sm);
+  }
+  
+  #feedback-content {
+    padding: var(--space-lg);
+    background-color: var(--light-100);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--primary-500);
+    white-space: pre-wrap; /* Preserves whitespace and wraps */
+    line-height: 1.7;
+    box-shadow: var(--shadow-inner);
+  }
+  
+  /* Styles for formatted feedback within #feedback-content */
+  .feedback-section {
+      /* Container */
+  }
+  .feedback-score h4, .feedback-details h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--dark-900);
+      margin-bottom: var(--space-xs);
+  }
+  .feedback-score p {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary-500);
+      margin-bottom: 0;
+  }
+  .feedback-details p {
+      color: var(--gray-600);
+      margin-bottom: 0;
+  }
+  
+  
+  /* Q&A Report Area */
+  #report-content {
+      margin-top: var(--space-xl); /* Space above Q&A blocks */
+  }
+  #report-content h3 { /* Title for Q&A section */
+      margin-bottom: var(--space-lg);
+  }
+  
+  .qa-block {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px dashed var(--gray-200);
+  }
+  
+  .qa-block:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .qa-block h4 { /* Style for "Question X" and "Answer" titles */
+    color: var(--primary-500);
+    margin-bottom: var(--space-sm);
+    font-size: 1rem; /* Slightly smaller than card title */
+  }
+  
+  .qa-block .question { /* Style for the actual question text */
+      color: var(--dark-900);
+      font-weight: 500;
+      margin-bottom: var(--space-md);
+      line-height: 1.6;
+  }
+  
+  .qa-block .answer { /* Container for the preformatted answer */
+    background-color: white;
+    padding: var(--space-md);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    white-space: pre-wrap; /* Changed from pre */
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--gray-600); /* Slightly muted color for answer */
+    overflow-x: auto; /* Allow horizontal scroll if needed */
+  }
+  .qa-block .answer pre { /* Keep pre for formatting, but reset margins */
+      margin: 0;
+      padding: 0;
+      background: none;
+      box-shadow: none;
+      font-family: inherit; /* Inherit from .answer */
+      font-size: inherit;
+      line-height: inherit;
+      color: inherit;
+  }
+  
+  /* Style the "Watch Video" button link */
+  .qa-block .secondary-btn.small-btn {
+      margin-top: var(--space-sm);
+      display: inline-block; /* Ensure it doesn't take full width */
+      text-decoration: none; /* Remove underline if any */
+  }
+  .qa-block p a.secondary-btn.small-btn { /* More specific if needed */
+      /* Adjustments */
+  }
+  
+  
+  /* ===== STATUS BADGES ===== */
+  .interview-status {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap; /* Prevent badge text wrapping */
+  }
+  
+  .interview-status::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: var(--space-xs);
+    background: currentColor; /* Use text color for dot */
+    flex-shrink: 0; /* Prevent dot shrinking */
+  }
+  
+  /* Status Colors */
+  .status-Pending { background-color: #fff3cd; color: #856404; } /* Warning */
+  .status-Reviewed { background-color: #cce5ff; color: #004085; } /* Info */
+  .status-Shortlisted { background-color: #d4edda; color: #155724; } /* Success */
+  .status-Hired { background-color: #d1e7dd; color: var(--success-500); border: 1px solid var(--success-500);} /* Stronger Success */
+  .status-Rejected { background-color: #f8d7da; color: #721c24; } /* Danger */
+  
+  /* Add a default/unknown status style */
+  .status-Unknown, .interview-status:not([class*="status-"]) {
+      background-color: var(--gray-200);
+      color: var(--gray-600);
+  }
+  
+  
+  /* ===== MESSAGES & LOADERS ===== */
+  .message, .error-message, .inline-msg { /* Base styles for all messages */
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+    border-left-width: 4px;
+    border-left-style: solid;
+    animation: fadeIn 0.5s ease;
+    font-size: 0.95rem; /* Consistent font size */
+  }
+  
+  .message { /* Success/Info Message */
+    background-color: #e6f7ff; /* Light blue */
+    border-left-color: var(--primary-500);
+    color: var(--primary-600); /* Darker blue text */
+  }
+  
+  .error-message { /* Error Message */
+    background-color: #f8d7da; /* Light red */
+    border-left-color: var(--danger-500);
+    color: #721c24; /* Darker red text */
+    animation: shake 0.4s ease; /* Add shake */
+  }
+  
+  /* Inline messages might need less margin */
+  .inline-msg {
+      margin-bottom: var(--space-sm);
+      margin-top: var(--space-xs);
+  }
+  
+  /* Specific message areas if needed */
+  #post-job-msg, #update-status-msg {
+      margin-top: var(--space-md); /* Space above message */
+  }
+  #auth-error, #auth-message { /* Style these using the base classes */
+      /* These IDs now primarily used for JS targeting */
+  }
+  #interview-error, #error-feedback { /* Style these error containers */
+      /* These IDs now primarily used for JS targeting */
+  }
+  
+  
+  .loading {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    color: var(--gray-600);
+    font-style: italic;
+    padding: var(--space-md); /* Add padding */
+    width: 100%; /* Ensure takes full width in containers */
+    text-align: center;
+  }
+  
+  .loading::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(67, 97, 238, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--primary-500);
+    animation: spin 1s linear infinite;
+  }
+  
+  /* Global Loading Overlay */
+  #global-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.95); /* More opaque */
+    z-index: var(--z-modal);
+    display: none; /* Controlled by JS */
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--dark-900);
+  }
+  
+  #global-loading::after { /* Larger spinner for overlay */
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+    margin-top: var(--space-md); /* Space between text and spinner */
+    border-color: rgba(67, 97, 238, 0.2);
+    border-top-color: var(--primary-500);
+  }
+  
+  /* Global Error Display (if needed separate from auth/inline) */
+  #global-error {
+      /* Similar overlay style as loading, but with error styling */
+      position: fixed;
+      /* ... (rest of overlay styles) */
+      background-color: rgba(248, 215, 218, 0.95); /* Light red tint */
+      color: #721c24;
+      /* Add icon or specific styling */
+      display: none; /* Controlled by JS */
+      padding: var(--space-xl);
+      text-align: center;
+  }
+  
+  
+  /* ===== FOOTER ===== */
+  .main-footer {
+    text-align: center;
+    padding: var(--space-lg) 0;
+    margin-top: var(--space-xxl);
+    border-top: 1px solid var(--gray-200);
+    color: var(--gray-600);
+    animation: fadeIn 0.6s both;
+    flex-shrink: 0; /* Prevent footer from shrinking */
+  }
+  
+  /* ===== UTILITY CLASSES ===== */
+  .highlight-box {
+    background-color: var(--light-100);
+    padding: var(--space-md);
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--primary-500);
+    margin-bottom: var(--space-md);
+  }
+  
+  .index-note {
+    font-size: 0.85rem;
+    color: var(--gray-600);
+    font-style: italic;
+    margin-top: var(--space-md);
+    text-align: center;
+  }
+  
+  /* Dynamically Added Back Button in Error States */
+  .back-btn-error {
+      /* Inherits .secondary-btn from JS, add specific margins/display */
+      margin-top: var(--space-lg);
+      display: block; /* Make it block level */
+      margin-left: auto; /* Center if parent allows */
+      margin-right: auto; /* Center if parent allows */
+      max-width: 250px; /* Prevent overly wide button */
+  }
+  
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    20%, 60% {
+      transform: translateX(-5px);
+    }
+    40%, 80% {
+      transform: translateX(5px);
+    }
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* ===== RESPONSIVE DESIGN ===== */
+  @media (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.35rem; }
+  
+    .container {
+      padding: 0 var(--space-md); /* Reduce padding */
+    }
+  
+    .main-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-md);
+    }
+  
+    #user-info {
+      width: 100%;
+      justify-content: space-between;
+      flex-wrap: wrap; /* Allow wrapping */
+      gap: var(--space-xs); /* Reduce gap */
+    }
+    .welcome-message {
+        flex-basis: 100%; /* Take full width on small screens */
+        margin-bottom: var(--space-xs);
+    }
+    #user-info #logout-btn {
+        margin-left: 0; /* Reset margin */
+    }
+  
+    .card {
+      padding: var(--space-lg);
+    }
+  
+    #video-area {
+      padding: var(--space-lg);
+    }
+  
+    .report-info {
+        flex-direction: column; /* Stack info items */
+        align-items: flex-start; /* Align left */
+    }
+    .report-info .interview-status {
+        margin-left: 0; /* Reset margin */
+        margin-top: var(--space-sm);
+    }
+  
+    .status-update-content {
+      grid-template-columns: 1fr; /* Always single column */
+    }
+    #update-status-btn {
+        width: 100%; /* Full width button on mobile */
+    }
+  
+    .list-item {
+        flex-direction: column; /* Stack list item content */
+        align-items: flex-start; /* Align left */
+    }
+    .list-item .item-actions,
+    .list-item button {
+        margin-top: var(--space-sm);
+        width: 100%; /* Make buttons full width */
+        justify-content: center; /* Center button text */
+    }
+    .list-item .interview-status {
+        align-self: flex-start; /* Align status left */
+        margin-top: var(--space-xs);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    html { font-size: 15px; } /* Slightly smaller base font */
+  
+    .main-header h1 {
+      font-size: 1.75rem;
+    }
+  
+    /* Make most buttons full width on very small screens */
+    .btn:not(.small-btn):not(#logout-btn) {
+      /* Exclude small buttons and specific exceptions */
+      width: 100%;
+    }
+  
+    #recording-controls .btn {
+      width: 100%;
+      margin-bottom: var(--space-xs);
+    }
+  
+    .auth-container {
+        padding: var(--space-lg); /* Reduce padding slightly */
+    }
+  
+    #user-info {
+        padding: var(--space-xs) var(--space-sm);
+    }
+    .welcome-message {
+        font-size: 0.9rem;
+    }
+  
+    .qa-block .answer {
+        font-size: 0.9rem; /* Smaller code font */
+    }
+  }
+  /* =========================================================== */
+/* ==          HEADER USER PROFILE PANEL STYLES             == */
+/* =========================================================== */
+
+/* --- User Panel Container (#user-info.user-panel) --- */
+.user-panel {
+    display: flex;                 /* Use flexbox for horizontal layout */
+    align-items: center;          /* Vertically align items */
+    gap: var(--space-md);          /* Space between text block and button */
+    background-color: #ffffff;     /* Clear white background */
+    padding: var(--space-sm) var(--space-lg); /* Comfortable padding */
+    border-radius: var(--radius-md); /* Consistent rounding */
+    box-shadow: var(--shadow-sm);    /* Subtle elevation */
+    border: 1px solid var(--gray-200); /* Light border */
+    transition: box-shadow var(--transition-sm), border-color var(--transition-sm);
+    /* max-width: 550px; */          /* Optional: prevent it from getting too wide */
+  }
+  
+  .user-panel:hover {
+    box-shadow: var(--shadow-md);    /* Slightly raise on hover */
+    /* border-color: var(--gray-300); */ /* Optional: slightly darker border on hover */
+  }
+  
+  /* --- Welcome Message Area --- */
+  .user-panel .welcome-message {
+    flex-grow: 1;                  /* Allow text block to take available space */
+    font-size: 0.9rem;             /* Slightly smaller base font for compactness */
+    line-height: 1.6;              /* Improve readability */
+    color: var(--gray-600);        /* Default text color (for labels like Role/Experience) */
+  }
+  
+  /* Styling the "Welcome," text */
+  .user-panel .welcome-message {
+    /* Keep the default gray color or make it slightly darker */
+    /* color: var(--gray-700); */
+  }
+  
+  /* --- User Details (Common style for dynamic parts) --- */
+  .user-panel .user-detail {
+    font-weight: 500;              /* Give values medium weight */
+    color: var(--dark-900);        /* Make values stand out */
+    display: inline;               /* Ensure they flow correctly */
+  }
+  
+  /* --- Specific User Details --- */
+  .user-panel .user-fullname {
+    font-weight: 700;              /* Bold name */
+    color: var(--primary-600);     /* Brand color for the name */
+  }
+  
+  .user-panel .user-email {
+    font-size: 0.9em;              /* Make email slightly smaller */
+    color: var(--gray-600);        /* Keep email subtle */
+    margin-left: var(--space-xxs); /* Tiny space before parenthesis */
+  }
+  
+  /* --- Role & Experience Info --- */
+  .user-panel .user-role-info,
+  .user-panel .user-exp-info {
+    display: inline-block;         /* Keep label and value together */
+    white-space: nowrap;           /* Prevent awkward wrapping */
+    margin: 0 var(--space-xs);     /* Space around the "|" separator */
+  }
+  
+  /* Ensure the pipe separator has consistent spacing and color */
+  .user-panel .user-role-info::after { /* Add the pipe via CSS for control */
+    content: "|";
+    display: inline-block;
+    margin-left: var(--space-xs);
+    color: var(--gray-400);
+    font-weight: 300; /* Make pipe lighter */
+  }
+  
+  /* --- Logout Button --- */
+  .user-panel #logout-btn {
+    /* Base styles from .btn, .secondary-btn, .small-btn are applied */
+    flex-shrink: 0;                /* Prevent button from shrinking */
+    /* margin-left: auto; */       /* Removed - gap handles spacing now */
+  }
+  
+  /* =========================================================== */
+  /* ==          RESPONSIVE STYLES FOR USER PANEL             == */
+  /* =========================================================== */
+  
+  @media (max-width: 992px) { /* Adjust breakpoint as needed */
+     .user-panel .welcome-message {
+        font-size: 0.85rem; /* Slightly smaller font on medium screens */
+     }
+      .user-panel {
+          gap: var(--space-sm); /* Reduce gap */
+          padding: var(--space-xs) var(--space-md); /* Reduce padding */
+      }
+  }
+  
+  
+  @media (max-width: 768px) {
+    .user-panel {
+      flex-direction: column;       /* Stack items vertically */
+      align-items: stretch;        /* Stretch items to full width */
+      text-align: center;          /* Center text content */
+      gap: var(--space-sm);          /* Space between text and button */
+      width: 100%;                 /* Ensure it takes full width if header stacks */
+      padding: var(--space-md);      /* More vertical padding when stacked */
+    }
+  
+    .user-panel .welcome-message {
+        /* Remove flex-grow as it's not needed in column layout */
+        line-height: 1.7; /* Slightly more line height when centered */
+    }
+  
+    /* Center Role/Experience on mobile */
+    .user-panel .user-role-info,
+    .user-panel .user-exp-info {
+       display: block; /* Each on its own line */
+       margin: var(--space-xxs) 0; /* Small vertical margin */
+    }
+  
+     /* Hide the CSS pipe separator on mobile */
+    .user-panel .user-role-info::after {
+        display: none;
+    }
+  
+    .user-panel #logout-btn {
+      width: 100%;                 /* Make button full width */
+      margin-top: var(--space-sm); /* Add space above button */
+    }
+  }
+  
+  @media (max-width: 480px) {
+      .user-panel {
+          padding: var(--space-sm); /* Further reduce padding */
+      }
+      .user-panel .welcome-message {
+          font-size: 0.8rem; /* Even smaller font */
+      }
+  }
+  

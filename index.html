@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeFuery AI Interview</title>
+    <!-- Link CSS file -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Favicon (Optional but recommended) -->
+    <!-- <link rel="icon" href="favicon.ico" type="image/x-icon"> -->
+
+    <!-- Firebase SDKs (Compat Version) -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <!-- Add Storage SDK if you implement direct video upload TO Firebase later -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script> -->
+
+</head>
+<body>
+    <div class="container">
+        <!-- ===== HEADER ===== -->
+        <header class="main-header">
+            <div class="logo"> <!-- Logo container -->
+                <h1>CodeFuery</h1>
+            </div>
+            <!-- User Profile Panel -->
+            <div id="user-info" class="user-panel" style="display: none;">
+                 <div class="welcome-message">
+                    Welcome, <strong id="user-fullname" class="user-detail user-fullname"></strong> (<span id="user-email" class="user-detail user-email"></span>)!<br>
+                    <span class="user-role-info">Role: <span id="user-role" class="user-detail user-role"></span></span>
+                    <span class="user-exp-info">Experience: <span id="user-experience" class="user-detail user-experience">N/A</span> years</span>
+                 </div>
+                <button id="logout-btn" class="btn secondary-btn small-btn">Logout</button>
+            </div>
+        </header>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main id="main-content">
+
+            <!-- ===== AUTH SECTION ===== -->
+            <section id="auth-section">
+                <div class="auth-container card">
+                    <!-- Login Form -->
+                    <form id="login-form" class="auth-form active-form">
+                        <h2>Login</h2>
+                        <div class="form-group">
+                            <label for="login-email" class="sr-only">Email</label>
+                            <input type="email" id="login-email" placeholder="Email" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                             <label for="login-password" class="sr-only">Password</label>
+                            <input type="password" id="login-password" placeholder="Password" required aria-required="true">
+                        </div>
+                        <div class="form-actions">
+                            <button id="login-btn" class="btn primary-btn full-width">Login</button>
+                            <a href="#" id="forgot-password-link" class="btn text-btn">Forgot Password?</a>
+                        </div>
+                         <p class="auth-switch">Don't have an account? <a href="#" id="show-signup-link" class="btn text-btn link-look">Sign Up</a></p>
+                    </form>
+
+                    <!-- Signup Form -->
+                    <form id="signup-form" class="auth-form" style="display: none;">
+                        <h2>Sign Up</h2>
+                        <div class="form-group">
+                             <label for="signup-fullname" class="sr-only">Full Name</label>
+                            <input type="text" id="signup-fullname" placeholder="Full Name" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email" class="sr-only">Email</label>
+                            <input type="email" id="signup-email" placeholder="Email" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-password" class="sr-only">Password</label>
+                            <input type="password" id="signup-password" placeholder="Password (min. 6 characters)" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                             <label for="signup-experience" class="sr-only">Years of Experience</label>
+                            <input type="number" id="signup-experience" placeholder="Years of Experience" required min="0" aria-required="true">
+                        </div>
+                        <div class="form-group">
+                             <label for="signup-role" class="sr-only">Select Your Role</label>
+                            <select id="signup-role" required aria-required="true">
+                                <option value="" disabled selected>Select Your Role</option>
+                                <option value="candidate">Candidate</option>
+                                <option value="recruiter">Recruiter</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button id="signup-btn" class="btn primary-btn full-width">Sign Up</button>
+                        </div>
+                        <p class="auth-switch">Already have an account? <a href="#" id="show-login-link" class="btn text-btn link-look">Login</a></p>
+                    </form>
+
+                    <!-- Forgot Password Form -->
+                     <form id="forgot-password-form" class="auth-form" style="display: none;">
+                        <h2>Reset Password</h2>
+                         <p class="form-description">Enter your email address and we'll send you a link to reset your password.</p>
+                         <div class="form-group">
+                            <label for="reset-email-input" class="sr-only">Account Email</label>
+                            <input type="email" id="reset-email-input" placeholder="Enter your account email" required aria-required="true">
+                         </div>
+                         <div class="form-actions">
+                            <button id="reset-password-btn" class="btn primary-btn full-width">Send Reset Link</button>
+                            <a href="#" id="back-to-login-link" class="btn text-btn link-look">Back to Login</a>
+                         </div>
+                    </form>
+
+                    <!-- Auth Messages Area -->
+                    <div class="auth-messages">
+                        <div id="auth-message" class="message" style="display: none;"></div>
+                        <div id="auth-error" class="error-message" style="display: none;"></div>
+                    </div>
+                </div> <!-- /.auth-container -->
+            </section> <!-- /#auth-section -->
+
+            <!-- ===== RECRUITER DASHBOARD ===== -->
+            <section id="recruiter-dashboard" class="dashboard" style="display: none;">
+                <header class="dashboard-header">
+                    <h2>Recruiter Dashboard</h2>
+                </header>
+
+                <div class="dashboard-content">
+                    <!-- Post Job Card -->
+                    <div id="post-job-section" class="card">
+                        <div class="card-header">
+                             <h3>Post New Job</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="job-title" class="sr-only">Job Title</label>
+                                <input type="text" id="job-title" placeholder="Job Title" required aria-required="true">
+                            </div>
+                            <div class="form-group">
+                                 <label for="job-description" class="sr-only">Job Description</label>
+                                <textarea id="job-description" placeholder="Job Description" required aria-required="true" rows="5"></textarea>
+                            </div>
+                            <button id="post-job-btn" class="btn primary-btn">Post Job</button>
+                            <div id="post-job-msg" class="message inline-msg" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Posted Jobs Card -->
+                    <div class="card">
+                        <div class="card-header">
+                             <h3>Your Posted Jobs</h3>
+                        </div>
+                        <div class="card-body">
+                             <div id="recruiter-jobs-list" class="list-container">
+                                 <div class="loading">Loading jobs...</div> <!-- Initial loading state -->
+                             </div>
+                        </div>
+                         <div class="card-footer">
+                             <p class="index-note">Note: Jobs might have retention policies set by admin.</p>
+                         </div>
+                    </div>
+
+                    <!-- Candidates List Card -->
+                     <div class="card">
+                         <div class="card-header">
+                            <h3>Candidates for: <strong id="selected-job-title-recruiter" class="highlight-text">(Select a job)</strong></h3>
+                         </div>
+                         <div class="card-body">
+                             <div id="candidates-list" class="list-container">
+                                 <p class="list-empty-msg">Select a job to view candidates.</p> <!-- Initial placeholder -->
+                             </div>
+                         </div>
+                          <div class="card-footer">
+                             <p class="index-note">Note: Review candidate submissions promptly.</p>
+                          </div>
+                     </div>
+                </div> <!-- /.dashboard-content -->
+            </section> <!-- /#recruiter-dashboard -->
+
+            <!-- ===== CANDIDATE DASHBOARD ===== -->
+            <section id="candidate-dashboard" class="dashboard" style="display: none;">
+                 <header class="dashboard-header">
+                    <h2>Candidate Dashboard</h2>
+                </header>
+                 <div class="dashboard-content">
+                     <!-- Available Jobs Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Available Jobs</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="available-jobs-list" class="list-container">
+                                <div class="loading">Loading jobs...</div> <!-- Initial loading state -->
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                             <p class="index-note">Note: Job postings may expire.</p>
+                        </div>
+                    </div>
+                     <!-- My Interviews Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>My Interviews</h3>
+                        </div>
+                        <div class="card-body">
+                             <div id="my-interviews-list" class="list-container">
+                                 <div class="loading">Loading interviews...</div> <!-- Initial loading state -->
+                             </div>
+                         </div>
+                          <div class="card-footer">
+                            <p class="index-note">Note: Interview records may be archived after some time.</p>
+                          </div>
+                    </div>
+                 </div> <!-- /.dashboard-content -->
+            </section> <!-- /#candidate-dashboard -->
+
+            <!-- ===== INTERVIEW SECTION ===== -->
+            <section id="interview-section" class="card interview-container" style="display: none;">
+                <header class="interview-header">
+                    <h2>Interview for <strong id="interview-job-title" class="highlight-text"></strong></h2>
+                     <div class="interview-status-messages">
+                         <div id="interview-loading" class="loading" style="display: none;">Setting up...</div>
+                         <div id="interview-error" class="error-message" style="display: none;"></div>
+                     </div>
+                </header>
+
+                <div id="interview-qa-area" class="interview-body" style="display: none;">
+                   <div class="question-area">
+                       <h3 id="question-title">Question X of Y:</h3>
+                       <p id="question-text" class="highlight-box">Loading question...</p>
+                   </div>
+
+                   <div id="video-area" class="video-area-container">
+                       <h4>Your Video Answer</h4>
+                       <div class="video-feed-wrapper">
+                           <video id="webcam-feed" width="400" height="300" autoplay muted playsinline aria-label="Webcam Feed"></video>
+                       </div>
+
+                       <div id="recording-controls" class="button-group">
+                           <button id="start-recording-btn" class="btn primary-btn record-btn" disabled>Start Recording</button>
+                           <button id="stop-recording-btn" class="btn secondary-btn stop-btn" disabled>Stop Recording</button>
+                       </div>
+
+                        <div id="interview-navigation" class="button-group" style="margin-top: var(--space-md);">
+                             <button id="next-question-btn" class="btn primary-btn" style="display: none;">Next Question</button>
+                             <button id="finish-interview-btn" class="btn primary-btn accent-finish" style="display: none;">Finish Interview</button>
+                         </div>
+
+                       <div class="recording-feedback">
+                           <span id="recording-status" class="status-text">Ready to record.</span>
+                           <div id="loading-answer" class="loading inline-loading" style="display: none;">Processing...</div>
+                           <div id="stt-simulation-note" class="message inline-msg warning-msg" style="display: none;">
+                               <strong>Note:</strong> Speech-to-text is simulated. Your actual speech is not transcribed in this demo. Analysis uses placeholder text. Video is uploaded.
+                           </div>
+                       </div>
+                   </div> <!-- /#video-area -->
+                </div> <!-- /#interview-qa-area -->
+           </section> <!-- /#interview-section -->
+
+            <!-- ===== REPORT SECTION ===== -->
+            <section id="report-section" class="card report-container" style="display: none;">
+                 <header class="report-header">
+                    <div class="report-header-main">
+                        <h2>Interview Report</h2>
+                         <button id="back-to-dashboard-btn" class="btn secondary-btn back-btn small-btn">← Back to Dashboard</button>
+                    </div>
+                     <div class="report-info">
+                         <span class="info-item"><strong>Job:</strong> <span id="report-job-title">N/A</span></span>
+                         <span class="info-item"><strong>Candidate:</strong> <span id="report-candidate-email">N/A</span></span>
+                         <span class="info-item"><strong>Status:</strong> <span id="report-status" class="interview-status status-Pending">Pending</span></span>
+                     </div>
+                 </header>
+
+                 <div class="report-body">
+                    <!-- Recruiter Status Update Area -->
+                    <div id="recruiter-status-update" class="status-update-card sub-card" style="display: none;">
+                         <div class="card-header">
+                             <h3>Update Candidate Status</h3>
+                         </div>
+                         <div class="card-body">
+                             <!-- Start: Two-Row Layout -->
+                             <div class="status-update-content">
+                                 <!-- Row 1: Status Selector -->
+                                 <div class="form-group status-select-row">
+                                     <label for="update-status-select">Select New Status</label>
+                                     <select id="update-status-select">
+                                         <option value="Pending">Pending Review</option>
+                                         <option value="Reviewed">Reviewed</option>
+                                         <option value="Shortlisted">Shortlisted</option>
+                                         <option value="Hired">Hired (Approve)</option>
+                                         <option value="Rejected">Rejected</option>
+                                     </select>
+                                 </div>
+                                 <!-- Row 2: Notes & Button Wrapper -->
+                                 <div class="status-notes-action-row">
+                                     <div class="form-group status-notes-group">
+                                         <label for="status-notes">Additional Notes (Optional)</label>
+                                         <textarea id="status-notes" rows="3" placeholder="Add any notes about the status change..."></textarea>
+                                     </div>
+                                     <div class="form-action-group status-button-group">
+                                         <button id="update-status-btn" class="btn primary-btn">Update Status</button>
+                                     </div>
+                                 </div>
+                             </div>
+                             <!-- End: Two-Row Layout -->
+                             <div id="update-status-msg" class="message inline-msg" style="display: none;"></div>
+                         </div>
+                    </div> <!-- /#recruiter-status-update -->
+
+                    <!-- AI Feedback Area -->
+                    <div id="feedback-area" class="report-subsection">
+                        <h3>AI Feedback & Score <small>(Based on Simulated Text)</small></h3>
+                        <div id="loading-feedback" class="loading" style="display: none;">Loading feedback...</div>
+                        <div id="error-feedback" class="error-message" style="display: none;"></div>
+                        <div id="feedback-content" class="highlight-box" style="display: none;">
+                            <!-- Feedback will be loaded here by JS -->
+                            <p>Loading feedback content...</p>
+                        </div>
+                    </div>
+
+                    <!-- Q&A Report Area -->
+                    <div class="report-subsection">
+                        <h3>Interview Q&A <small>(Simulated Text & Video Link)</small></h3>
+                        <div id="report-content">
+                            <!-- Q&A Report will be loaded here by JS -->
+                            <div class="loading">Loading Q&A...</div>
+                        </div>
+                    </div>
+                 </div> <!-- /.report-body -->
+            </section> <!-- /#report-section -->
+
+             <!-- ===== GLOBAL OVERLAYS ===== -->
+             <div id="global-loading" class="loading overlay" style="display: none;">
+                 <div class="loading-content">Loading...</div>
+             </div>
+             <div id="global-error" class="error-message overlay-message" style="display: none;">
+                  An unexpected error occurred. Please try again later.
+             </div>
+        </main>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="main-footer">
+            <p>© <span id="current-year">2024</span> Team CodeFurey</p>
+        </footer>
+
+    </div> <!-- /.container -->
+
+    <!-- Link JavaScript file -->
+    <script src="script.js"></script>
+
+    <!-- Optional: Add JS to update year -->
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+
+    <!-- Screen Reader Only CSS Class Definition (Keep this or move to CSS file) -->
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</body>
+</html>
