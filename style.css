@@ -1178,3 +1178,242 @@
     #recording-controls span { text-align: center; } /* Center status/timer text */
     #recording-status { text-align: center; }
   }
+  /* --- Enhanced Date Input Style (Option 2: Visual Distinction) --- */
+
+.form-group label[for="job-deadline"] {
+  /* Optional styling */
+}
+
+/* Container for potential icon positioning */
+.form-group.date-input-group { /* Add this class to the form-group div in HTML */
+   position: relative;
+}
+
+#job-deadline {
+   /* Base Styles */
+   display: block;
+   width: 100%;
+   padding: 0.75rem 2.5rem 0.75rem 1rem; /* More padding on the right for icon */
+   font-size: 1rem;
+   font-family: var(--font-family);
+   line-height: var(--line-height);
+   color: var(--text-color);
+   background-color: var(--white-color);
+   background-clip: padding-box;
+   border: 1px solid var(--border-color);
+   border-radius: var(--border-radius);
+   transition: border-color var(--transition-speed) ease-in-out, box-shadow var(--transition-speed) ease-in-out;
+   appearance: none;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   cursor: text;
+   min-height: calc(1.6em + 1.5rem + 2px);
+
+   /* Add a background icon */
+   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 24 24"><path fill="%236c757d" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>'); /* Inline SVG */
+   background-repeat: no-repeat;
+   background-position: right 1rem center; /* Position icon */
+   background-size: 1em 1em; /* Control icon size */
+}
+
+/* Focus State */
+#job-deadline:focus {
+   border-color: var(--primary-color);
+   outline: 0;
+   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Hide the default browser picker icon */
+#job-deadline::-webkit-calendar-picker-indicator {
+   opacity: 0; /* Make it invisible */
+   position: absolute; /* Allow clicking over the background icon */
+   right: 0;
+   top: 0;
+   width: 40px; /* Make clickable area cover the icon */
+   height: 100%;
+   cursor: pointer;
+}
+
+/* Placeholder */
+#job-deadline::placeholder {
+   color: var(--secondary-color);
+   opacity: 0.7;
+}
+
+/* Add this HTML structure:
+  <div class="form-group date-input-group">
+      <label for="job-deadline">Apply Deadline:</label>
+      <input type="date" id="job-deadline" required>
+  </div>
+*/
+/* --- Container for the form group --- */
+#edit-phone-group { /* Or use .form-group if you want this style applied to all similar groups */
+  margin-bottom: 1.5rem; /* Spacing below the group */
+  /* display: none; */ /* Keep this inline style if you control visibility with JS */
+                      /* Or manage visibility with a CSS class (e.g., .is-hidden) */
+}
+
+/* --- Styling for the label --- */
+#edit-phone-group label {
+  display: block; /* Ensure label is on its own line */
+  font-weight: 600; /* Make label slightly bolder */
+  color: #333; /* Dark grey color for good readability */
+  margin-bottom: 0.5rem; /* Space between label and input */
+  font-size: 0.9rem; /* Slightly smaller font size for the label */
+  cursor: pointer; /* Indicate it's clickable (points to input) */
+}
+
+/* --- Styling for the phone input field --- */
+#edit-phone {
+  display: block; /* Take up full width */
+  width: 100%; /* Ensure it fills the container */
+  padding: 0.75rem 1rem; /* Comfortable padding inside the input */
+  font-size: 1rem; /* Standard text size */
+  line-height: 1.5; /* Standard line height */
+  color: #495057; /* Standard input text color */
+  background-color: #fff; /* White background */
+  background-clip: padding-box;
+  border: 1px solid #ced4da; /* Standard light grey border */
+  border-radius: 0.3rem; /* Slightly rounded corners */
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); /* Subtle inner shadow */
+
+  /* --- Transitions for smooth focus effect --- */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* --- Focus state for the input --- */
+#edit-phone:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #80bdff; /* Highlight border color on focus (light blue) */
+  outline: 0; /* Remove default browser outline */
+  /* Nice glow effect on focus */
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* --- Placeholder text styling (optional) --- */
+#edit-phone::placeholder {
+  color: #6c757d;
+  opacity: 1; /* Override browser defaults */
+}
+
+/* --- Disabled state styling (optional) --- */
+#edit-phone:disabled,
+#edit-phone[readonly] {
+  background-color: #e9ecef; /* Grey out background when disabled */
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* --- Styling for Validation (Optional examples) --- */
+/* Add these classes with JavaScript based on validation */
+#edit-phone.is-valid {
+    border-color: #28a745; /* Green border for valid input */
+}
+
+#edit-phone.is-valid:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Green glow for valid input focus */
+}
+
+#edit-phone.is-invalid {
+    border-color: #dc3545; /* Red border for invalid input */
+}
+
+#edit-phone.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); /* Red glow for invalid input focus */
+}
+
+/* --- Accessibility: Reduce motion preference --- */
+@media (prefers-reduced-motion: reduce) {
+  #edit-phone {
+    transition: none; /* Disable transitions if user prefers reduced motion */
+  }
+}
+/* --- Container for the form group --- */
+#signup-phone-group { /* Or use .form-group if applying to multiple similar groups */
+  margin-bottom: 1.5rem; /* Spacing below the group */
+  /* Consider controlling visibility with a CSS class instead of inline style */
+  /* e.g., add/remove a class like 'is-hidden' { display: none; } */
+}
+
+/* --- Styling for the label --- */
+#signup-phone-group label {
+  display: block; /* Label on its own line */
+  font-weight: 600; /* Slightly bolder label text */
+  color: #333; /* Dark grey for readability */
+  margin-bottom: 0.5rem; /* Space between label and input */
+  font-size: 0.9rem; /* Slightly smaller label font */
+  cursor: pointer; /* Indicates it's related to the input */
+}
+
+/* --- Styling for the phone input field --- */
+#signup-phone {
+  display: block; /* Take up full available width */
+  width: 100%; /* Ensure it fills its container */
+  padding: 0.75rem 1rem; /* Comfortable internal padding */
+  font-size: 1rem; /* Standard text size */
+  line-height: 1.5;
+  color: #495057; /* Standard input text color */
+  background-color: #fff; /* White background */
+  background-clip: padding-box;
+  border: 1px solid #ced4da; /* Light grey border */
+  border-radius: 0.3rem; /* Slightly rounded corners */
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); /* Subtle inner shadow */
+
+  /* --- Transitions for smooth focus/state changes --- */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* --- Focus state for the input --- */
+#signup-phone:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #80bdff; /* Highlight border with a light blue */
+  outline: 0; /* Remove default browser outline */
+  /* Add a subtle blue glow effect */
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* --- Placeholder text styling --- */
+#signup-phone::placeholder {
+  color: #6c757d; /* Lighter grey for placeholder text */
+  opacity: 1; /* Ensure placeholder is visible (some browsers reduce opacity) */
+  font-style: italic; /* Optional: make placeholder italic */
+}
+
+/* --- Disabled state styling (optional) --- */
+#signup-phone:disabled,
+#signup-phone[readonly] {
+  background-color: #e9ecef; /* Grey out background */
+  opacity: 1;
+  cursor: not-allowed; /* Indicate non-interactive state */
+}
+
+/* --- Styling for Validation (Optional examples) --- */
+/* Add these classes dynamically with JavaScript */
+#signup-phone.is-valid {
+    border-color: #28a745; /* Green border for success */
+}
+
+#signup-phone.is-valid:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Green glow */
+}
+
+#signup-phone.is-invalid {
+    border-color: #dc3545; /* Red border for error */
+}
+
+#signup-phone.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); /* Red glow */
+}
+
+/* --- Accessibility: Reduce motion preference --- */
+@media (prefers-reduced-motion: reduce) {
+  #signup-phone {
+    transition: none; /* Disable transitions if user prefers */
+  }
+}
